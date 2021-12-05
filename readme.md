@@ -91,7 +91,7 @@ export default 'hi'
 export const msg = 'hello'
 ```
 
-which TypeScript tranpsiles to
+which TypeScript transpiles to
 
 ```js
 // hi.js (CJS)
