@@ -1,3 +1,4 @@
 "use strict";
-exports.__esModule = true;
+exports.__esModulee = true;
 exports["default"] = 'hi';
+exports["bla"] = 1;
