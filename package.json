@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "build": "tsc hi.ts"
+    "build": "npm run build:observation-1 && npm run build:observation-2",
+    "build:observation-1": "tsc observation-1/hi.ts",
+    "build:observation-2": "tsc observation-2/hi.ts"
   },
   "dependencies": {
     "typescript": "^4.5.2"
