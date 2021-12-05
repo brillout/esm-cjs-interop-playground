@@ -1,5 +1,6 @@
 List of ESM-CJS interoperability issues known to Vite Team.
 
+
 # Observation 1
 
 TypeScript transpiles ESM to CJS like this:
@@ -21,7 +22,8 @@ exports["default"] = 'hi';
 exports.msg = 'hello';
 ```
 
-TODO: we don't know the purpose of the line `exports.msg = void 0;`. Seems superfluous?
+TODO: I don't know the purpose of the line `exports.msg = void 0;`; seems superfluous?
+
 
 # Observation 2
 
@@ -51,7 +53,8 @@ Prints:
 hello
 ```
 
-This means that, from CJS's perspective, the ESM default lives at `moduleDefaut.default`.
+This means that the ESM default lives at `moduleDefaut.default`.
+
 
 # Observation 3
 
@@ -75,7 +78,7 @@ Prints:
 { default: 'hi', msg: 'hello' }
 ```
 
-But
+Whereas
 
 ```ts
 // hi.ts (ESM, TypeScript)
@@ -111,9 +114,11 @@ Prints:
 }
 ```
 
-Node.js is considering working on supporting it: [nodejs/node#40891](https://github.com/nodejs/node/issues/40891). But this will never be Node.js's default behavior as it would break existings app.
+Node.js is working on supporting it: [nodejs/node#40891](https://github.com/nodejs/node/issues/40891), [nodejs/node#40902](https://github.com/nodejs/node/pull/40902).
+But this will never be Node.js's default behavior as it would break existings app.
 
-Note how `exports["default"]` is overwritten with `exports`, leading to our next observation.
+Also note how `exports["default"]` is overwritten with `exports`, leading to our next observation.
+
 
 # Observation 4
 
@@ -158,3 +163,30 @@ Loading CJS from ESM overwrites the default export.
 
 # Observation 5
 
+When loading CJS from ESM, non-statically analysable exports are skipped.
+
+```js
+// CJS
+
+exports.msg = 'hello';
+const key = 'msg2';
+exports[key] = 'bonjour';
+```
+
+```js
+// ESM
+
+const moduleExports = await import('./hi.js')
+console.log(moduleExports)
+```
+
+Prints:
+
+```
+{
+  default: { msg: 'hello', msg2: 'bonjour' },
+  msg: 'hello'
+}
+```
+
+Note how `msg` is present but `msg2` is missing at the root. The only way to access `msg2` is with `default.msg2` whereas `msg` can be accessed directly.
