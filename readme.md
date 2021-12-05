@@ -1,4 +1,8 @@
-List of ESM-CJS interoperability issues known to the Vite Team.
+# Goal
+
+Goal is to collect the list of ESM-CJS interoperability issues known to Vite's team.
+
+In order to make Vite's native SSR API rock solid.
 
 
 # Observation 1
