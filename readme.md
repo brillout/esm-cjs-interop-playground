@@ -1,4 +1,4 @@
-List of ESM-CJS interoperability issues known to Vite Team.
+List of ESM-CJS interoperability issues known to the Vite Team.
 
 
 # Observation 1
@@ -53,7 +53,7 @@ Prints:
 hello
 ```
 
-This means that the ESM default lives at `moduleDefaut.default`.
+This means that the ESM default lives at `moduleDefaut.default`. (See previous section about how TypeScript transpiles ESM to CJS.)
 
 
 # Observation 3
@@ -72,7 +72,7 @@ const imported = await import('./hi.mjs')
 console.log(imported)
 ```
 
-Prints:
+prints:
 
 ```
 { default: 'hi', msg: 'hello' }
@@ -114,7 +114,7 @@ Prints:
 }
 ```
 
-Node.js is working on supporting it: [nodejs/node#40891](https://github.com/nodejs/node/issues/40891), [nodejs/node#40902](https://github.com/nodejs/node/pull/40902).
+Node.js is working on supporting `__esModule`, see [nodejs/node#40891](https://github.com/nodejs/node/issues/40891) and [nodejs/node#40902](https://github.com/nodejs/node/pull/40902).
 But this will never be Node.js's default behavior as it would break existings app.
 
 Also note how `exports["default"]` is overwritten with `exports`, leading to our next observation.
@@ -149,7 +149,7 @@ const moduleExports = await import('./hi.js')
 console.log(moduleExports)
 ```
 
-Prints:
+prints:
 
 ```js
 {
@@ -158,12 +158,12 @@ Prints:
 }
 ```
 
-Loading CJS from ESM overwrites the default export.
+Which makes sense considering our previous observations.
 
 
 # Observation 5
 
-When loading CJS from ESM, non-statically analysable exports are skipped.
+When loading CJS from ESM, non-statically-analysable exports are missing.
 
 ```js
 // CJS
@@ -189,4 +189,6 @@ Prints:
 }
 ```
 
-Note how `msg` is present but `msg2` is missing at the root. The only way to access `msg2` is with `default.msg2` whereas `msg` can be accessed directly.
+Note how `msg` is present at the root while `msg2` is missing.
+The only way to access `msg2` is over `default.msg2`,
+whereas `msg` can be accessed directly.
